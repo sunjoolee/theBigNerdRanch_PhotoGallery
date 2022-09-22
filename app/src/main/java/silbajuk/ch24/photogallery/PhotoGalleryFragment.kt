@@ -26,7 +26,7 @@ class PhotoGalleryFragment : Fragment() {
     }
 
     companion object{
-        //PhotoGalleryActivity에서 새 프래그먼트 인스턴스 생성할 때 호출
+        //PhotoGalleryActivity에서 새 프래그먼트 인스턴스 생성할 때
         fun newInstance() = PhotoGalleryFragment()
     }
 }
