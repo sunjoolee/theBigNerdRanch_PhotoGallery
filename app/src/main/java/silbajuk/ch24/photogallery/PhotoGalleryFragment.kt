@@ -1,6 +1,7 @@
 package silbajuk.ch24.photogallery
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import silbajuk.ch24.photogallery.api.FlickrApi
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+private const val TAG = "PhotoGalleryFragment"
 
 class PhotoGalleryFragment : Fragment() {
 
@@ -25,6 +31,19 @@ class PhotoGalleryFragment : Fragment() {
             .build()
 
         val flickrApi : FlickrApi = retrofit.create(FlickrApi::class.java)
+
+        //웹 요청 실행하기
+        val flickrHomePageRequest: Call<String> = flickrApi.fetchContents()
+
+        flickrHomePageRequest.enqueue(object : Callback<String>{
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.e(TAG, "failed to fetch photos", t)
+            }
+
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                Log.d(TAG, "Response received: ${response.body()}")
+            }
+        })
     }
 
     override fun onCreateView(
@@ -41,7 +60,7 @@ class PhotoGalleryFragment : Fragment() {
     }
 
     companion object{
-        //PhotoGalleryActivity에서 새 프래그먼트 인스턴스 생성할 때
+        //PhotoGalleryActivity 에서 새 프래그먼트 인스턴스 생성할 때
         fun newInstance() = PhotoGalleryFragment()
     }
 }
