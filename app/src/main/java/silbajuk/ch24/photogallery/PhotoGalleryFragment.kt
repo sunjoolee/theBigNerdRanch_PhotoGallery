@@ -26,7 +26,7 @@ class PhotoGalleryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-       val flickrLiveData: LiveData<String> = FLickrFetchr().fetchContents()
+       val flickrLiveData: LiveData<String> = FLickrFetchr().fetchPhotos()
         flickrLiveData.observe(this,
             Observer { responseString ->
                 Log.d(TAG, "Response received: $responseString")
@@ -49,7 +49,7 @@ class PhotoGalleryFragment : Fragment() {
     }
 
     companion object{
-        //PhotoGalleryActivity 에서 새 프래그먼트 인스턴스 생성할 때
+        //PhotoGalleryActivity 에서 새 프래그먼트 인스턴스 생성할 때 호출
         fun newInstance() = PhotoGalleryFragment()
     }
 }
