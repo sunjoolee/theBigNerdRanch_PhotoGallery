@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Retrofit
@@ -24,26 +26,13 @@ class PhotoGalleryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Retrofit 인스턴스를 사용해서 FlickrApi 인스턴스 생성하기
-        val retrofit:Retrofit = Retrofit.Builder()
-            .baseUrl("https://www.flickr.com/")
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-
-        val flickrApi : FlickrApi = retrofit.create(FlickrApi::class.java)
-
-        //웹 요청 실행하기
-        val flickrHomePageRequest: Call<String> = flickrApi.fetchContents()
-
-        flickrHomePageRequest.enqueue(object : Callback<String>{
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.e(TAG, "failed to fetch photos", t)
+       val flickrLiveData: LiveData<String> = FLickrFetchr().fetchContents()
+        flickrLiveData.observe(this,
+            Observer { responseString ->
+                Log.d(TAG, "Response received: $responseString")
             }
+        )
 
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                Log.d(TAG, "Response received: ${response.body()}")
-            }
-        })
     }
 
     override fun onCreateView(
