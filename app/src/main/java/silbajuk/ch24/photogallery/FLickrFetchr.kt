@@ -1,8 +1,12 @@
 package silbajuk.ch24.photogallery
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -53,5 +57,14 @@ class FLickrFetchr{
             }
         })
         return responseLiveData
+    }
+
+    //인자로 전달된 URL로부터 데이터를 가져와서 Bitmap으로 변환
+    @WorkerThread
+    fun fetchPhoto(url:String): Bitmap?{
+        val response : Response<ResponseBody> = flickrApi.fetchUrlBytes(url).execute()
+        val bitmap = response.body()?.byteStream()?.use(BitmapFactory::decodeStream)
+        Log.i(TAG, "Decoded bitmap = $bitmap from response $response")
+        return bitmap
     }
 }
