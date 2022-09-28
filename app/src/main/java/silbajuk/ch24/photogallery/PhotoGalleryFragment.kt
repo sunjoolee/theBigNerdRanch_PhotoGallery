@@ -35,6 +35,10 @@ class PhotoGalleryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //프래스먼트 유보(retain)
+        //사용자가 장치를 회전하여 구성 변경이 생길 때도 그 시점의 프래그먼트 인스턴스가 갖고 있던 상태 데이터를 계속 보존
+        retainInstance = true
+
        photoGalleryViewModel = ViewModelProvider(this).get(PhotoGalleryViewModel::class.java)
 
     }
