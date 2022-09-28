@@ -2,13 +2,11 @@ package silbajuk.ch24.photogallery
 
 import android.os.HandlerThread
 import android.util.Log
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.*
 
 private const val TAG = "ThumbnailDownloader"
 
-class ThumbnailDownloader<in T> : HandlerThread(TAG), LifecycleObserver {
+class ThumbnailDownloader<in T> : HandlerThread(TAG), DefaultLifecycleObserver {
     private var hasQuit = false
 
     override fun quit(): Boolean {
@@ -17,12 +15,19 @@ class ThumbnailDownloader<in T> : HandlerThread(TAG), LifecycleObserver {
     }
 
     //생명주기 소유자의 onCreate(...)와 onDestroy() 함수들을 관찰
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun setup(){
+//    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+//    fun setup(){
+//        Log.i(TAG, "Starting background Thread")
+//    }
+//    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+//    fun tearDown(){
+//        Log.i(TAG, "Destroying background Thread")
+//    }
+    override fun onCreate(owner: LifecycleOwner) {
         Log.i(TAG, "Starting background Thread")
     }
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun tearDown(){
+
+    override fun onDestroy(owner: LifecycleOwner) {
         Log.i(TAG, "Destroying background Thread")
     }
 
