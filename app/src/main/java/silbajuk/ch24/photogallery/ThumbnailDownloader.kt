@@ -25,10 +25,13 @@ class ThumbnailDownloader<in T> : HandlerThread(TAG), DefaultLifecycleObserver {
 //    }
     override fun onCreate(owner: LifecycleOwner) {
         Log.i(TAG, "Starting background Thread")
+        start()
+        looper
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
         Log.i(TAG, "Destroying background Thread")
+        quit()
     }
 
     //이 함수는 PhotoAdapter의 onBindViewHolder(...)에서 호출됨

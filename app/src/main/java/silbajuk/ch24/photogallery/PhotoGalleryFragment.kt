@@ -108,6 +108,8 @@ class PhotoGalleryFragment : Fragment() {
             )?: ColorDrawable()
 
             holder.bindDrawable(placeholder)
+
+            thumbnailDownloader.queueThumbnail(holder, galleryItem.url)
         }
 
         override fun getItemCount(): Int = galleryItems.size
