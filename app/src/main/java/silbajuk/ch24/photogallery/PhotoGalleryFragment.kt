@@ -1,8 +1,10 @@
 package silbajuk.ch24.photogallery
 
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.CollapsibleActionView
 import android.view.LayoutInflater
@@ -42,7 +44,15 @@ class PhotoGalleryFragment : Fragment() {
 
        photoGalleryViewModel = ViewModelProvider(this).get(PhotoGalleryViewModel::class.java)
 
-        thumbnailDownloader = ThumbnailDownloader()
+        //응답 Handler 연결하기
+        //Handler는 현재 스레드의 Looper에 자신을 연결 -> main 스레드와 연결된 Handler 생성됨
+        val responseHandler = Handler()
+        thumbnailDownloader =
+            ThumbnailDownloader(responseHandler){photoHolder, bitmap->
+                val drawable = BitmapDrawable(resources,bitmap)
+                photoHolder.bindDrawable(drawable)
+            }
+
         lifecycle.addObserver(thumbnailDownloader)
     }
 
