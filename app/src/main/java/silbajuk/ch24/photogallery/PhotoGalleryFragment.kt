@@ -53,7 +53,8 @@ class PhotoGalleryFragment : Fragment() {
                 photoHolder.bindDrawable(drawable)
             }
 
-        lifecycle.addObserver(thumbnailDownloader)
+        //프래그먼트 LifecycleObserver 등록 코드 변경
+        lifecycle.addObserver(thumbnailDownloader.fragmentLifecycleObserver)
     }
 
     override fun onCreateView(
@@ -61,6 +62,11 @@ class PhotoGalleryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //프래그먼트 뷰 LifecycleObserver 등록 코드 추가
+        viewLifecycleOwner.lifecycle.addObserver(
+            thumbnailDownloader.viewLifecycleObserver
+        )
+
         val view = inflater.inflate(R.layout.fragment_photo_gallery, container, false)
 
         photoRecyclerView = view.findViewById(R.id.photo_recycler_view)
@@ -81,9 +87,20 @@ class PhotoGalleryFragment : Fragment() {
         )
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        //프래그먼트 뷰 LifecycleObserver 등록 해제 추가
+        viewLifecycleOwner.lifecycle.removeObserver(
+            thumbnailDownloader.viewLifecycleObserver
+        )
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        lifecycle.removeObserver(thumbnailDownloader)
+        //프래그먼트 LifecycleObserver 등록 해제 변경
+        lifecycle.removeObserver(
+            thumbnailDownloader.fragmentLifecycleObserver
+        )
     }
 
     companion object{

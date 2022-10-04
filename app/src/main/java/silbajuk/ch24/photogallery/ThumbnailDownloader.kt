@@ -16,11 +16,33 @@ private const val TAG = "ThumbnailDownloader"
 private const val MESSAGE_DOWNLOAD = 0
 
 class ThumbnailDownloader<in T>(
-    //main스레드로부터 전달된 Handler의 참조를 갖는 속성
     private val responseHandler: Handler,
-    //응답 측(내려받은 이미지)와 요청 측(main 스레드)간의 소통을 위한 콜백에 사용될 함수 타입 속성
     private val onThumbnailDownloaded: (T, Bitmap) -> Unit
-) : HandlerThread(TAG), DefaultLifecycleObserver {
+) : HandlerThread(TAG){
+
+    val fragmentLifecycleObserver : DefaultLifecycleObserver =
+        object : DefaultLifecycleObserver{
+            override fun onCreate(owner: LifecycleOwner) {
+                Log.i(TAG, "Starting background thread")
+                start()
+                looper
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
+                Log.i(TAG, "Destroying background thread")
+                quit()
+            }
+        }
+
+    val viewLifecycleObserver : DefaultLifecycleObserver =
+        object : DefaultLifecycleObserver{
+            override fun onDestroy(owner: LifecycleOwner) {
+                Log.i(TAG, "Clearing all requests from queue")
+                requestHandler.removeMessages(MESSAGE_DOWNLOAD)
+                requestMap.clear()
+            }
+        }
+
     private var hasQuit = false
 
     //모든 Retrofit 설정 코드는 스레드의 생이 동안 한번만 실행된다
@@ -41,22 +63,6 @@ class ThumbnailDownloader<in T>(
 
             }
         }
-    }
-
-    override fun quit(): Boolean {
-        hasQuit = true
-        return super.quit()
-    }
-
-    override fun onCreate(owner: LifecycleOwner) {
-        Log.i(TAG, "Starting background Thread")
-        start()
-        looper
-    }
-
-    override fun onDestroy(owner: LifecycleOwner) {
-        Log.i(TAG, "Destroying background Thread")
-        quit()
     }
 
     //이 함수는 PhotoGalleryFragment.kt에서 PhotoAdapter의 onBindViewHolder(...)가 호출
