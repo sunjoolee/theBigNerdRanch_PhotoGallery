@@ -8,7 +8,7 @@ class PhotoGalleryViewModel : ViewModel() {
     val galleryItemLiveData : LiveData<List<GalleryItem>>
 
     init{
-        galleryItemLiveData = FLickrFetchr().fetchPhotos()
+        galleryItemLiveData = FLickrFetchr().searchPhotos("sky")
     }
 
 }
