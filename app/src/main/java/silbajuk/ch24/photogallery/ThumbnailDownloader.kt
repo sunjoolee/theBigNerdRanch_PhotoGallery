@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap
 
 private const val TAG = "ThumbnailDownloader"
 
-//메세지 객체의 what 속성으로 설정할 상수
 private const val MESSAGE_DOWNLOAD = 0
 
 class ThumbnailDownloader<in T>(
@@ -45,7 +44,6 @@ class ThumbnailDownloader<in T>(
 
     private var hasQuit = false
 
-    //모든 Retrofit 설정 코드는 스레드의 생이 동안 한번만 실행된다
     private lateinit var requestHandler: Handler
     private val requestMap = ConcurrentHashMap<T, String>()
     private val flickrFetchr = FLickrFetchr()
@@ -53,10 +51,8 @@ class ThumbnailDownloader<in T>(
     @Suppress("UNCHECKED_CAST")
     @SuppressLint("HandlerLeak")
     override fun onLooperPrepared() {
-        //HandlerThread.onLooperPrepared()는 Looper가 최초로 큐를 확인하기 전에 호출됨
         requestHandler = object : Handler(){
             override fun handleMessage(msg: Message) {
-                //내려받기 요청 메세지를 큐에서 꺼내어 처리할 준비가 되먄 이 함수가 호출됨
                 val target = msg.obj as T
                 Log.i(TAG, "Got a request fot URL: ${requestMap[target]}")
                 handleRequest(target)

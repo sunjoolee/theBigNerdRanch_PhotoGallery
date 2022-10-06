@@ -38,14 +38,10 @@ class PhotoGalleryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //프래스먼트 유보(retain)
-        //사용자가 장치를 회전하여 구성 변경이 생길 때도 그 시점의 프래그먼트 인스턴스가 갖고 있던 상태 데이터를 계속 보존
         retainInstance = true
 
        photoGalleryViewModel = ViewModelProvider(this).get(PhotoGalleryViewModel::class.java)
 
-        //응답 Handler 연결하기
-        //Handler는 현재 스레드의 Looper에 자신을 연결 -> main 스레드와 연결된 Handler 생성됨
         val responseHandler = Handler()
         thumbnailDownloader =
             ThumbnailDownloader(responseHandler){photoHolder, bitmap->
@@ -53,7 +49,6 @@ class PhotoGalleryFragment : Fragment() {
                 photoHolder.bindDrawable(drawable)
             }
 
-        //프래그먼트 LifecycleObserver 등록 코드 변경
         lifecycle.addObserver(thumbnailDownloader.fragmentLifecycleObserver)
     }
 
@@ -62,7 +57,6 @@ class PhotoGalleryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //프래그먼트 뷰 LifecycleObserver 등록 코드 추가
         viewLifecycleOwner.lifecycle.addObserver(
             thumbnailDownloader.viewLifecycleObserver
         )
@@ -89,7 +83,6 @@ class PhotoGalleryFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        //프래그먼트 뷰 LifecycleObserver 등록 해제 추가
         viewLifecycleOwner.lifecycle.removeObserver(
             thumbnailDownloader.viewLifecycleObserver
         )
@@ -97,7 +90,6 @@ class PhotoGalleryFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        //프래그먼트 LifecycleObserver 등록 해제 변경
         lifecycle.removeObserver(
             thumbnailDownloader.fragmentLifecycleObserver
         )
