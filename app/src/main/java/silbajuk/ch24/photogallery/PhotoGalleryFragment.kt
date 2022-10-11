@@ -6,10 +6,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.CollapsibleActionView
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -39,6 +36,7 @@ class PhotoGalleryFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         retainInstance = true
+        setHasOptionsMenu(true)
 
        photoGalleryViewModel = ViewModelProvider(this).get(PhotoGalleryViewModel::class.java)
 
@@ -93,6 +91,11 @@ class PhotoGalleryFragment : Fragment() {
         lifecycle.removeObserver(
             thumbnailDownloader.fragmentLifecycleObserver
         )
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_photo_gallery, menu)
     }
 
     companion object{
