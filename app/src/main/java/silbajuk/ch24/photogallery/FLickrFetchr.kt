@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -15,6 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import silbajuk.ch24.photogallery.api.FlickrApi
 import silbajuk.ch24.photogallery.api.FlickrResponse
+import silbajuk.ch24.photogallery.api.PhotoInterceptor
 
 private const val TAG = "FlickrFetchr"
 
@@ -23,17 +25,31 @@ class FLickrFetchr{
     private val flickrApi: FlickrApi
 
     init {
+        val client = OkHttpClient.Builder()
+            .addInterceptor(PhotoInterceptor())
+            .build()
+
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl("https://api.flickr.com/")
             .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
             .build()
 
         flickrApi = retrofit.create(FlickrApi::class.java)
     }
 
-    fun fetchPhotos():LiveData<List<GalleryItem>> {
+    fun fetchPhotos():LiveData<List<GalleryItem>>{
+        return fetchPhotoMetadata(flickrApi.fetchPhotos())
+    }
+
+    fun searchPhotos(query : String) : LiveData <List<GalleryItem>> {
+        Log.d(TAG, "searchPhotos query: $query")
+        return fetchPhotoMetadata(flickrApi.searchPhotos(query))
+    }
+
+    private fun fetchPhotoMetadata(flickrRequest : Call<FlickrResponse>)
+        :LiveData<List<GalleryItem>> {
         val responseLiveData: MutableLiveData<List<GalleryItem>> = MutableLiveData()
-        val flickrRequest: Call<FlickrResponse> = flickrApi.fetchPhotos()
 
         flickrRequest.enqueue(object : Callback<FlickrResponse> {
             override fun onFailure(call: Call<FlickrResponse>, t: Throwable) {
@@ -45,10 +61,13 @@ class FLickrFetchr{
 
                 //JSON 응답 데이터 파싱하여 GalleryItem 객체 리스트로 저장
                 val flickrResponse: FlickrResponse? = response.body()
+                Log.d(TAG, "flickrResponse: $flickrResponse")
                 val photoResponse:PhotoResponse? = flickrResponse?.photos
+                Log.d(TAG, "photoResponse: $photoResponse")
                 var galleryItems : List<GalleryItem> = photoResponse?.galleryItems
                     ?: mutableListOf()
-                //url_s 필드 값 없는 이미지 걸러냄
+                Log.d(TAG, "galleryItems: $galleryItems")
+
                 galleryItems = galleryItems.filterNot {
                     it.url.isBlank()
                 }
