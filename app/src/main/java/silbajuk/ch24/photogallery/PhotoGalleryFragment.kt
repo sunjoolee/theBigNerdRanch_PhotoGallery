@@ -10,6 +10,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -101,6 +102,7 @@ class PhotoGalleryFragment : Fragment() {
         val searchItem: MenuItem = menu.findItem(R.id.menu_item_search)
         val searchView = searchItem.actionView as SearchView
 
+        Log.d(TAG, "searchView is created")
         searchView.apply {
             setOnQueryTextListener(object : SearchView.OnQueryTextListener{
                 override fun onQueryTextSubmit(queryText: String): Boolean {
@@ -114,6 +116,12 @@ class PhotoGalleryFragment : Fragment() {
                     return false
                 }
             })
+
+            setOnClickListener {
+                Log.d(TAG, "searchView is clicked, query: $query")
+                searchView.setQuery(photoGalleryViewModel.searchTerm, false)
+                searchView.clearFocus()
+            }
         }
     }
 
