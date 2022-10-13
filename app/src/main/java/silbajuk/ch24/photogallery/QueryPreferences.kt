@@ -5,7 +5,7 @@ import android.preference.PreferenceManager
 
 private const val PREF_SEARCH_QUERY = "searchQuery"
 
-class QueryPreferences {
+object QueryPreferences {
 
     fun getStoredQuery(context:Context) : String{
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
