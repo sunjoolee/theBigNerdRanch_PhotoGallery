@@ -16,7 +16,11 @@ class PhotoGalleryViewModel(private val app : Application) : AndroidViewModel(ap
 
         galleryItemLiveData =
             Transformations.switchMap(mutableSearchTerm){searchTerm ->
-                fLickrFetchr.searchPhotos(searchTerm)
+                if(searchTerm.isBlank()){
+                    fLickrFetchr.fetchPhotos()
+                } else{
+                    fLickrFetchr.searchPhotos(searchTerm)
+                }
             }
     }
 
