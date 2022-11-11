@@ -54,18 +54,6 @@ class PhotoGalleryFragment : Fragment() {
             }
 
         lifecycle.addObserver(thumbnailDownloader.fragmentLifecycleObserver)
-
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.UNMETERED)
-            .build()
-        val workRequest = OneTimeWorkRequest
-            .Builder(PollWorker::class.java)
-            .setConstraints(constraints)
-            .build()
-        
-        //WorkManager클래스를 사용해서 OnTimeRequest인스턴스 스케쥴링
-        WorkManager.getInstance()
-            .enqueue(workRequest)
     }
 
     override fun onCreateView(
@@ -139,6 +127,15 @@ class PhotoGalleryFragment : Fragment() {
                 searchView.clearFocus()
             }
         }
+
+        val toggleItem = menu.findItem(R.id.menu_item_toggle_polling)
+        val isPolling = QueryPreferences.isPolling(requireContext())
+        val toggleTitle = if(isPolling){
+            R.string.stop_polling
+        }else{
+            R.string.start_polling
+        }
+        toggleItem.setTitle(toggleTitle)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
