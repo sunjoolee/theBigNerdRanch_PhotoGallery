@@ -2,6 +2,7 @@ package silbajuk.ch24.photogallery
 
 import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -61,8 +62,13 @@ class PollWorker(val context: Context, workerParams: WorkerParameters)
 
             val notificationManager = NotificationManagerCompat.from(context)
             notificationManager.notify(0, notification)
+            context.sendBroadcast(Intent(ACTION_SHOW_NOTIFICATION))
         }
 
         return Result.success()
+    }
+
+    companion object{
+        const val ACTION_SHOW_NOTIFICATION = "silbajuk.ch24.photogallery.SHOW_NOTIFICATION"
     }
 }

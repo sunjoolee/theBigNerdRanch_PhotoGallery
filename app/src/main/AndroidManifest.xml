@@ -28,6 +28,12 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <receiver android:name=".NotificationReceiver">
+            <intent-filter>
+                <action android:name="silbajuk.ch24.photogallery.SHOW_NOTIFICATION"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
