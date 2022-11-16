@@ -36,7 +36,7 @@
         <receiver android:name=".NotificationReceiver"
             android:permission="silbajuk.ch24.photogallery.PRIVATE"
             android:exported="false">
-            <intent-filter>
+            <intent-filter android:priority="-999">
                 <action android:name="silbajuk.ch24.photogallery.SHOW_NOTIFICATION"/>
             </intent-filter>
         </receiver>
