@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+    
+    <permission android:name="silbajuk.ch24.photogallery.PRIVATE"
+        android:protectionLevel="signature"/>
+    
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="silbajuk.ch24.photogallery.PRIVATE"/>
 
     <application
         android:name=".PhotoGalleryApplication"
@@ -29,7 +33,9 @@
                 android:value="" />
         </activity>
 
-        <receiver android:name=".NotificationReceiver">
+        <receiver android:name=".NotificationReceiver"
+            android:permission="silbajuk.ch24.photogallery.PRIVATE"
+            android:exported="false">
             <intent-filter>
                 <action android:name="silbajuk.ch24.photogallery.SHOW_NOTIFICATION"/>
             </intent-filter>
