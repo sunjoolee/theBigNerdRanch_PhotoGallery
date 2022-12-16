@@ -10,7 +10,7 @@ data class GalleryItem(
     @SerializedName("url_s") var url : String = "",
     @SerializedName("owner") var owner : String = ""
 ){
-    val photoPageUri: Uri?
+    val photoPageUri: Uri
         get(){
             return Uri.parse("https://www.flickr.com/photos/")
                 .buildUpon()
